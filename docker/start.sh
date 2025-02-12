@@ -8,11 +8,18 @@ export APP_DEBUG=true
 chmod -R 775 /var/www/html/storage
 chmod -R 775 /var/www/html/bootstrap/cache
 
-# npmビルドを実行（この部分を追加）
+# npmビルドを実行（デバッグ情報を追加）
 cd /var/www/html
+echo "=== Current directory ==="
+pwd
+echo "=== Installing npm packages ==="
 npm install --legacy-peer-deps
+echo "=== Running build ==="
 npm run build
-ls -la public/build/  # デバッグ用
+echo "=== Checking build output ==="
+ls -la public/build/ || true
+echo "=== Checking vite.config.js ==="
+cat vite.config.js
 
 # キャッシュをクリア
 php artisan config:clear
