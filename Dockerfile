@@ -47,8 +47,9 @@ ENV NODE_ENV=production
 
 # npmパッケージをインストール
 RUN npm install --force    # --forceオプションを追加
-RUN npm install -D vite@latest --force    # 最新バージョンを明示的にインストール
-RUN npm run build         # package.jsonのscriptsを使用
+RUN npm install -g vite    # グローバルにインストール
+RUN npm install -D vite@latest --force    # ローカルにも最新バージョンをインストール
+RUN ./node_modules/.bin/vite build    # 直接パスを指定してビルド
 
 # 環境設定
 RUN cp .env.example .env
