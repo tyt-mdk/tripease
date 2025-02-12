@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     npm
 
 # PHP拡張をインストール
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd pgsql pdo_pgsql
 
 # Composerをインストール
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -50,6 +50,18 @@ RUN chmod -R 775 storage bootstrap/cache
 # Nginxをインストールして設定
 RUN apt-get install -y nginx
 COPY docker/nginx.conf /etc/nginx/sites-available/default
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+RUN rm -f /etc/nginx/sites-enabled/default
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+
+# PHP-FPMの設定
+RUN sed -i 's/listen = \/run\/php\/php8.1-fpm.sock/listen = 127.0.0.1:9000/g' /usr/local/etc/php-fpm.d/www.conf
 
 # ポート設定
 EXPOSE 80
+
+# 設定ファイルのテスト
+RUN nginx -t
+
+# ログディレクトリの作成
+RUN mkdir -p /var/log/nginx
