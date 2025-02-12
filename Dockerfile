@@ -1,6 +1,11 @@
 # PHPのベースイメージを使用
 FROM php:8.1-fpm
 
+# Node.jsとnpmをインストール
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get update \
+    && apt-get install -y nodejs
+
 # 作業ディレクトリを設定
 WORKDIR /var/www/html
 
@@ -44,7 +49,7 @@ ENV NODE_ENV=production
 
 # npmパッケージをインストール
 RUN npm install
-RUN npx vite build
+RUN NODE_ENV=production node_modules/.bin/vite build
 
 # 環境設定
 RUN cp .env.example .env
