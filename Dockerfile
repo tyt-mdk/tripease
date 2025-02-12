@@ -26,9 +26,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_MEMORY_LIMIT=-1
 
-# 起動スクリプトを先にコピーして権限を設定
-COPY docker/start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
+# 起動スクリプトを作成
+RUN echo '#!/bin/sh\nphp-fpm &\nnginx -g "daemon off;"' > /usr/local/bin/start.sh \
+    && chmod +x /usr/local/bin/start.sh
 
 # アプリケーションファイルをコピー
 COPY . .
