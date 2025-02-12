@@ -43,8 +43,27 @@
             color: #1e293b;  /* text-slate-900相当 */
             box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);  /* shadow-sm相当 */
         }
+        /* 既存のスタイルを修正 */
         .edit-mode-only {
             display: none !important;
+        }
+
+        /* view-modeの定義を修正 */
+        .view-mode-only {
+            display: block !important; /* 強制的に表示 */
+        }
+
+        body.edit-mode .view-mode-only {
+            display: none !important;
+        }
+
+        /* タブ関連のスタイルを追加 */
+        .tab-pane {
+            display: block; /* 基本表示 */
+        }
+
+        .tab-pane.hidden {
+            display: none; /* 非表示時 */
         }
         body.edit-mode .edit-mode-only {
             display: block !important;
@@ -52,12 +71,6 @@
         /* flexコンテナ用の追加定義 */
         body.edit-mode .edit-mode-only.flex {
             display: flex !important;
-        }
-        body:not(.edit-mode) .view-mode-only {
-            display: block;
-        }
-        body.edit-mode .view-mode-only {
-            display: none;
         }
         .edit-mode [data-editable] p {
             cursor: pointer;
