@@ -45,25 +45,18 @@ RUN composer require laravel/ui
 # npmパッケージをインストール前にNODE_ENVを設定
 ENV NODE_ENV=production
 
-# デバッグ用のコマンド（インストール前）
-RUN echo "=== Before npm install ==="
-RUN cat package.json
-RUN npm -v
-RUN node -v
-
 # npmパッケージをインストール
 RUN npm cache clean --force
 RUN rm -rf node_modules package-lock.json
 RUN npm install --legacy-peer-deps
-RUN npm install -D vite@latest --legacy-peer-deps
-RUN npm install -D @vitejs/plugin-vue@latest --legacy-peer-deps
+RUN npm install -D vite@latest laravel-vite-plugin@latest @vitejs/plugin-vue@latest --legacy-peer-deps
 
-# デバッグ用のコマンド（インストール後）
+# デバッグ用のコマンド
 RUN echo "=== After npm install ==="
-RUN ls -la
 RUN ls -la node_modules/
-RUN npm list
-RUN npm list vite || true  # エラーを無視
+RUN npm list vite || true
+RUN npm list @vitejs/plugin-vue || true
+RUN npm list laravel-vite-plugin || true
 
 # ビルドを実行
 RUN npm run build
