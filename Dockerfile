@@ -49,7 +49,6 @@ ENV NODE_ENV=production
 RUN npm cache clean --force
 RUN rm -rf node_modules package-lock.json
 RUN npm install --legacy-peer-deps
-RUN npm install -D vite@5.4.10 laravel-vite-plugin@latest @vitejs/plugin-vue@latest --legacy-peer-deps
 
 # デバッグ用のコマンド
 RUN echo "=== After npm install ==="
