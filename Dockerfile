@@ -26,6 +26,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_MEMORY_LIMIT=-1
 
+# 起動スクリプトを先にコピーして権限を設定
+COPY docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 # アプリケーションファイルをコピー
 COPY . .
 
@@ -53,10 +57,6 @@ COPY docker/nginx.conf /etc/nginx/sites-available/default
 
 # ポート設定
 EXPOSE 80
-
-# 起動スクリプト
-COPY docker/start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
 
 # コンテナ起動時のコマンド
 CMD ["/usr/local/bin/start.sh"]
