@@ -11,6 +11,24 @@
     <script src="https://kit.fontawesome.com/ef96165231.js" crossorigin="anonymous"></script>
 
     <style>
+        /* 最上位に配置（新規追加） */
+        main {
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        .tab-content {
+            display: block !important;
+        }
+
+        /* タブペインの表示制御を強制（既存のものを強化） */
+        .tab-pane {
+            display: block !important;
+        }
+
+        .tab-pane.hidden {
+            display: none !important;
+        }
         /* プレースホルダーのスタイル */
         #request-add-form input::placeholder {
             color: #94a3b8; /* text-slate-400 */
@@ -155,7 +173,12 @@
             </div>
         </nav>
     </div>
-    <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-4 md:py-6 space-y-4 md:space-y-6 pb-32 md:pb-24">
+    <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-4 md:py-6 space-y-4 md:space-y-6 pb-32 md:pb-24" style="display: flex; flex-direction: column;">
+        <!-- テスト用の表示確認 -->
+        <div class="bg-white p-4 rounded-lg shadow-sm">
+            <p>表示テスト</p>
+        </div>
+    
         <!-- タブコンテンツ全体を囲む -->
         <div class="tab-content">
             <!-- 概要タブの内容 -->
