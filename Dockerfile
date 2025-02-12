@@ -47,7 +47,8 @@ ENV NODE_ENV=production
 
 # npmパッケージをインストール
 RUN npm install
-RUN NODE_ENV=production node_modules/.bin/vite build
+RUN npm install -D vite    # Viteを明示的にインストール
+RUN npm run build         # package.jsonのscriptsを使用
 
 # 環境設定
 RUN cp .env.example .env
