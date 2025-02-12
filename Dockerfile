@@ -44,7 +44,7 @@ ENV NODE_ENV=production
 
 # npmパッケージをインストール
 RUN npm install
-RUN npm run build
+RUN npx vite build
 
 # 環境設定
 RUN cp .env.example .env
