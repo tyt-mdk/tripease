@@ -43,6 +43,9 @@ RUN npm run build
 RUN cp .env.example .env
 RUN php artisan key:generate
 
+# マイグレーションを実行
+RUN php artisan migrate --force
+
 # パーミッションを設定
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 storage bootstrap/cache
