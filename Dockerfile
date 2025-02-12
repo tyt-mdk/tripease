@@ -54,5 +54,5 @@ COPY docker/nginx.conf /etc/nginx/sites-available/default
 # ポート設定
 EXPOSE 80
 
-# 起動コマンドを直接指定
-CMD php-fpm & nginx -g 'daemon off;'
+# 起動コマンドを設定
+ENTRYPOINT ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
