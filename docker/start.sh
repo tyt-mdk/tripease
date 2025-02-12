@@ -1,7 +1,14 @@
 #!/bin/sh
 
-# PHP-FPMを起動
-php-fpm &
+# マイグレーションを実行
+php artisan migrate --force
 
-# Nginxをフォアグラウンドで起動
-nginx -g "daemon off;"
+# キャッシュをクリア
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
+php artisan route:clear
+
+# PHP-FPMとNginxを起動
+php-fpm &
+nginx -g 'daemon off;'
