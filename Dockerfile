@@ -45,10 +45,19 @@ RUN composer require laravel/ui
 # npmパッケージをインストール前にNODE_ENVを設定
 ENV NODE_ENV=production
 
-# npmパッケージをインストール
-RUN npm install --force    # --forceオプションを追加
-RUN npm install -g vite    # グローバルにインストール
-RUN npm install -D vite@latest --force    # ローカルにも最新バージョンをインストール
+# npmパッケージをインストール（ビルドに必要なファイルのみ）
+RUN npm ci  # npm installの代わりにnpm ciを使用
+RUN npm list  # インストールされたパッケージを確認
+
+# デバッグ用のコマンド
+RUN pwd
+RUN ls -la
+RUN ls -la node_modules/.bin/
+RUN npm list vite
+RUN which vite
+
+# ビルドを実行
+RUN npm run build
 
 # デバッグ用のコマンド
 RUN pwd
