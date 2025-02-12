@@ -1,5 +1,5 @@
 # PHPのベースイメージを使用
-FROM php:8.2-fpm
+FROM php:8.1-fpm
 
 # 作業ディレクトリを設定
 WORKDIR /var/www/html
@@ -25,9 +25,18 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # アプリケーションファイルをコピー
 COPY . .
 
+# 所有者を変更
+RUN chown -R www-data:www-data /var/www/html
+
+# www-dataユーザーとしてcomposerを実行
+USER www-data
+
 # 依存関係をインストール
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN npm install && npm run build
+
+# rootユーザーに戻す
+USER root
 
 # 環境設定
 RUN cp .env.example .env
