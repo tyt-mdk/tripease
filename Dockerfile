@@ -1,13 +1,19 @@
-# PHPのベースイメージを使用
+# ビルドステージ
+FROM node:20 AS node-builder
+WORKDIR /app
+COPY package*.json ./
+COPY vite.config.js ./
+RUN npm install --legacy-peer-deps
+COPY resources/ ./resources/
+RUN npm run build
+
+# PHPステージ
 FROM php:8.1-fpm
 
 # Node.jsとnpmをインストール
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get update \
     && apt-get install -y nodejs
-
-# 作業ディレクトリを設定
-WORKDIR /var/www/html
 
 # 必要なパッケージをインストール
 RUN apt-get update && apt-get install -y \
@@ -33,46 +39,33 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_MEMORY_LIMIT=-1
 
+# 作業ディレクトリを設定
+WORKDIR /var/www/html
+
+# Composerファイルをコピー
+COPY composer*.json ./
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
 # アプリケーションファイルをコピー
 COPY . .
-
-# Composerの依存関係をインストール
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+COPY --from=node-builder /app/public/build/ ./public/build/
 
 # laravel/uiパッケージをインストール
 RUN composer require laravel/ui
-
-# npmパッケージをインストール前にNODE_ENVを設定
-ENV NODE_ENV=production
-
-# npmパッケージをインストール
-RUN npm cache clean --force
-RUN rm -rf node_modules package-lock.json
-RUN npm install --legacy-peer-deps
-
-# デバッグ用のコマンド
-RUN echo "=== After npm install ==="
-RUN ls -la node_modules/
-RUN npm list vite || true
-RUN npm list @vitejs/plugin-vue || true
-RUN npm list laravel-vite-plugin || true
-
-# ビルドを実行
-RUN npm run build
 
 # 環境設定
 RUN cp .env.example .env
 RUN php artisan key:generate --force
 
 # ストレージディレクトリの準備
-RUN mkdir -p /var/www/html/storage/framework/{sessions,views,cache}
-RUN mkdir -p /var/www/html/storage/logs
+RUN mkdir -p storage/framework/{sessions,views,cache}
+RUN mkdir -p storage/logs
 
 # パーミッションの設定
-RUN chown -R www-data:www-data /var/www/html
-RUN find /var/www/html/storage -type f -exec chmod 644 {} \;
-RUN find /var/www/html/storage -type d -exec chmod 755 {} \;
-RUN chmod -R 775 /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data .
+RUN find storage -type f -exec chmod 644 {} \;
+RUN find storage -type d -exec chmod 755 {} \;
+RUN chmod -R 775 bootstrap/cache
 
 # Nginxをインストールして設定
 RUN apt-get install -y nginx
