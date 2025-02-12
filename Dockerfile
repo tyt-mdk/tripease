@@ -22,29 +22,27 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 # Composerをインストール
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Composerの設定
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_MEMORY_LIMIT=-1
+
 # アプリケーションファイルをコピー
 COPY . .
 
-# 所有者を変更
-RUN chown -R www-data:www-data /var/www/html
+# Composerの依存関係をインストール
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-# www-dataユーザーとしてcomposerを実行
-USER www-data
-
-# 依存関係をインストール
-RUN composer install --no-dev --optimize-autoloader --no-interaction
-RUN npm install && npm run build
-
-# rootユーザーに戻す
-USER root
+# npmパッケージをインストール
+RUN npm install
+RUN npm run build
 
 # 環境設定
 RUN cp .env.example .env
 RUN php artisan key:generate
 
 # パーミッションを設定
-RUN chown -R www-data:www-data /var/www/html/storage
-RUN chmod -R 775 /var/www/html/storage
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 775 storage bootstrap/cache
 
 # Nginxをインストールして設定
 RUN apt-get install -y nginx
