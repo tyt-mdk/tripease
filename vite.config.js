@@ -11,6 +11,10 @@ export default defineConfig({
         // マニフェストを生成
         manifest: true,
     },
+    server: {
+        https: true,
+        host: true,
+    },
     plugins: [
         laravel({
             input: [
