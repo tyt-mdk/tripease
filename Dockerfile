@@ -46,8 +46,8 @@ RUN composer require laravel/ui
 ENV NODE_ENV=production
 
 # npmパッケージをインストール（ビルドに必要なファイルのみ）
-RUN npm ci  # npm installの代わりにnpm ciを使用
-RUN npm list  # インストールされたパッケージを確認
+RUN npm install --legacy-peer-deps    # 依存関係の問題を回避
+RUN npm install -D vite@latest --legacy-peer-deps    # Viteを明示的にインストール
 
 # デバッグ用のコマンド
 RUN pwd
@@ -57,7 +57,7 @@ RUN npm list vite
 RUN which vite
 
 # ビルドを実行
-RUN npm run build
+RUN npx vite build    # npxを使用してビルド
 
 # デバッグ用のコマンド
 RUN pwd
