@@ -54,18 +54,19 @@ RUN chmod -R 775 storage bootstrap/cache
 # Nginxをインストールして設定
 RUN apt-get install -y nginx
 COPY docker/nginx.conf /etc/nginx/sites-available/default
-RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-RUN rm -f /etc/nginx/sites-enabled/default
 RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+RUN rm -f /etc/nginx/sites-enabled/default
 
 # PHP-FPMの設定
 RUN sed -i 's/listen = \/run\/php\/php8.1-fpm.sock/listen = 127.0.0.1:9000/g' /usr/local/etc/php-fpm.d/www.conf
 
+# ログディレクトリの作成とパーミッション設定
+RUN mkdir -p /var/log/nginx /var/run/nginx
+RUN chown -R www-data:www-data /var/log/nginx /var/run/nginx
+RUN chmod -R 755 /var/log/nginx /var/run/nginx
+
 # ポート設定
 EXPOSE 80
 
-# 設定ファイルのテスト
-RUN nginx -t
-
-# ログディレクトリの作成
-RUN mkdir -p /var/log/nginx
+# 起動コマンドを設定
+CMD ["sh", "-c", "service nginx start && php-fpm"]

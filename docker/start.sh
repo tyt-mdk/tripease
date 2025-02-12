@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
 # PHP-FPMを起動
-service php8.2-fpm start
+php-fpm &
 
 # Nginxをフォアグラウンドで起動
 nginx -g "daemon off;"
