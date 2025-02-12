@@ -53,6 +53,14 @@ COPY docker/nginx.conf /etc/nginx/nginx.conf
 
 # PHP-FPMの設定
 RUN sed -i 's/listen = \/run\/php\/php8.1-fpm.sock/listen = 127.0.0.1:9000/g' /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i 's/;catch_workers_output = yes/catch_workers_output = yes/g' /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i 's/;php_flag[display_errors] = off/php_flag[display_errors] = on/g' /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i 's/;php_admin_value[error_log] = .*/php_admin_value[error_log] = \/var\/log\/php-fpm.log/g' /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i 's/;php_admin_flag[log_errors] = .*/php_admin_flag[log_errors] = on/g' /usr/local/etc/php-fpm.d/www.conf
+
+# ログディレクトリの作成
+RUN touch /var/log/php-fpm.log
+RUN chown www-data:www-data /var/log/php-fpm.log
 
 # キャッシュをクリア
 RUN php artisan config:clear
@@ -68,6 +76,7 @@ RUN mkdir -p /var/www/html/storage/logs
 RUN chown -R www-data:www-data /var/www/html
 RUN find /var/www/html/storage -type f -exec chmod 644 {} \;
 RUN find /var/www/html/storage -type d -exec chmod 755 {} \;
+RUN chmod -R 775 /var/www/html/bootstrap/cache
 
 # ポート設定
 EXPOSE 80
