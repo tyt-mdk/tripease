@@ -46,8 +46,8 @@ RUN composer require laravel/ui
 ENV NODE_ENV=production
 
 # npmパッケージをインストール
-RUN npm install
-RUN npm install -D vite    # Viteを明示的にインストール
+RUN npm install --force    # --forceオプションを追加
+RUN npm install -D vite@latest --force    # 最新バージョンを明示的にインストール
 RUN npm run build         # package.jsonのscriptsを使用
 
 # 環境設定
