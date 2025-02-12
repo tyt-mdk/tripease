@@ -1,11 +1,40 @@
 # ビルドステージ
 FROM node:20 AS node-builder
 WORKDIR /app
+
+# デバッグ用（開始時）
+RUN echo "=== Initial state ==="
+RUN pwd
+RUN ls -la
+
+# 必要なファイルをコピー
 COPY package*.json ./
 COPY vite.config.js ./
-RUN npm install --legacy-peer-deps
 COPY resources/ ./resources/
+COPY public/ ./public/
+
+# デバッグ用（ファイルコピー後）
+RUN echo "=== After copying files ==="
+RUN ls -la
+RUN echo "=== Contents of resources ==="
+RUN ls -la resources/
+RUN echo "=== Contents of public ==="
+RUN ls -la public/
+
+# ビルド実行
+RUN npm install --legacy-peer-deps
+RUN echo "=== After npm install ==="
+RUN ls -la node_modules/
+RUN npm list vite
+
 RUN npm run build
+
+# デバッグ用（ビルド後）
+RUN echo "=== After build ==="
+RUN ls -la
+RUN echo "=== Contents of public/build ==="
+RUN ls -la public/build/ || true
+RUN cat public/build/manifest.json || true
 
 # PHPステージ
 FROM php:8.1-fpm
