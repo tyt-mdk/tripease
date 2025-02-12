@@ -16,6 +16,9 @@
             display: flex !important;
             flex-direction: column !important;
             padding-bottom: 8rem !important;  /* pb-32相当 */
+            min-height: 0 !important; /* スクロールを可能にする */
+            flex: 1 1 auto !important; /* 高さを適切に確保 */
+            overflow-y: auto !important; /* スクロールを有効化 */
         }
 
         @media (min-width: 768px) {
