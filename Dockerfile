@@ -43,9 +43,6 @@ RUN npm run build
 RUN cp .env.example .env
 RUN php artisan key:generate
 
-# マイグレーションを実行
-RUN php artisan migrate --force
-
 # パーミッションを設定
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 775 storage bootstrap/cache
@@ -57,5 +54,5 @@ COPY docker/nginx.conf /etc/nginx/sites-available/default
 # ポート設定
 EXPOSE 80
 
-# 起動コマンドを設定
-ENTRYPOINT ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
+# 起動コマンドを設定（マイグレーションを含む）
+ENTRYPOINT ["sh", "-c", "php artisan migrate --force && php-fpm & nginx -g 'daemon off;'"]
