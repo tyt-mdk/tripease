@@ -32,6 +32,9 @@ COPY . .
 # Composerの依存関係をインストール
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
+# laravel/uiパッケージをインストール
+RUN composer require laravel/ui
+
 # npmパッケージをインストール
 RUN npm install
 RUN npm run build
