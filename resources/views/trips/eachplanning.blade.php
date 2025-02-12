@@ -15,6 +15,13 @@
         main {
             display: flex !important;
             flex-direction: column !important;
+            padding-bottom: 8rem !important;  /* pb-32相当 */
+        }
+
+        @media (min-width: 768px) {
+            main {
+                padding-bottom: 6rem !important;  /* md:pb-24相当 */
+            }
         }
 
         .tab-content {
@@ -174,11 +181,6 @@
         </nav>
     </div>
     <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-4 md:py-6 space-y-4 md:space-y-6 pb-32 md:pb-24" style="display: flex; flex-direction: column;">
-        <!-- テスト用の表示確認 -->
-        <div class="bg-white p-4 rounded-lg shadow-sm">
-            <p>表示テスト</p>
-        </div>
-    
         <!-- タブコンテンツ全体を囲む -->
         <div class="tab-content">
             <!-- 概要タブの内容 -->
