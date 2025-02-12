@@ -26,10 +26,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_MEMORY_LIMIT=-1
 
-# 起動スクリプトを作成
-RUN echo '#!/bin/sh\nphp-fpm &\nnginx -g "daemon off;"' > /usr/local/bin/start.sh \
-    && chmod +x /usr/local/bin/start.sh
-
 # アプリケーションファイルをコピー
 COPY . .
 
@@ -58,5 +54,5 @@ COPY docker/nginx.conf /etc/nginx/sites-available/default
 # ポート設定
 EXPOSE 80
 
-# コンテナ起動時のコマンド
-CMD ["/usr/local/bin/start.sh"]
+# 起動コマンドを直接指定
+CMD php-fpm & nginx -g 'daemon off;'
