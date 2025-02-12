@@ -39,6 +39,9 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 # laravel/uiパッケージをインストール
 RUN composer require laravel/ui
 
+# npmパッケージをインストール前にNODE_ENVを設定
+ENV NODE_ENV=production
+
 # npmパッケージをインストール
 RUN npm install
 RUN npm run build
