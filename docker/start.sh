@@ -8,9 +8,6 @@ export APP_DEBUG=true
 chmod -R 775 /var/www/html/storage
 chmod -R 775 /var/www/html/bootstrap/cache
 
-# マイグレーションを実行
-php artisan migrate --force
-
 # キャッシュをクリア
 php artisan config:clear
 php artisan cache:clear
@@ -23,6 +20,15 @@ php artisan storage:link
 # アプリケーションのキャッシュを最適化
 php artisan optimize
 
-# PHP-FPMとNginxを起動（エラーログを標準出力に）
+# エラーログの権限設定
+touch /var/log/php-fpm.log
+chmod 666 /var/log/php-fpm.log
+
+# PHP-FPMの起動
 php-fpm --nodaemonize --force-stderr &
-nginx -g 'daemon off;' 2>&1
+
+# Nginxの設定テスト
+nginx -t
+
+# Nginxを起動
+nginx -g 'daemon off;'
