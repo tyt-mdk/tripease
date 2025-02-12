@@ -49,7 +49,16 @@ ENV NODE_ENV=production
 RUN npm install --force    # --forceオプションを追加
 RUN npm install -g vite    # グローバルにインストール
 RUN npm install -D vite@latest --force    # ローカルにも最新バージョンをインストール
-RUN ./node_modules/.bin/vite build    # 直接パスを指定してビルド
+
+# デバッグ用のコマンド
+RUN pwd
+RUN ls -la
+RUN ls -la node_modules/.bin/
+RUN npm list vite
+RUN which vite
+
+# ビルドコマンド
+RUN vite build    # グローバルのviteを使用
 
 # 環境設定
 RUN cp .env.example .env
