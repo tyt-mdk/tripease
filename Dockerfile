@@ -45,7 +45,7 @@ RUN npm run build
 
 # 環境設定
 RUN cp .env.example .env
-RUN php artisan key:generate
+RUN php artisan key:generate --force
 
 # パーミッションを設定
 RUN chown -R www-data:www-data /var/www/html
