@@ -14,10 +14,14 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nodejs \
-    npm
+    npm \
+    libpq-dev \
+    postgresql \
+    postgresql-contrib
 
 # PHP拡張をインストール
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd pgsql pdo_pgsql
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pgsql pdo_pgsql
 
 # Composerをインストール
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
