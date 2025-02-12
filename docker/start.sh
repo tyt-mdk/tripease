@@ -8,18 +8,15 @@ export APP_DEBUG=true
 chmod -R 775 /var/www/html/storage
 chmod -R 775 /var/www/html/bootstrap/cache
 
-# npmビルドを実行（デバッグ情報を追加）
+# npmビルドを実行
 cd /var/www/html
-echo "=== Current directory ==="
-pwd
-echo "=== Installing npm packages ==="
 npm install --legacy-peer-deps
-echo "=== Running build ==="
 npm run build
-echo "=== Checking build output ==="
-ls -la public/build/ || true
-echo "=== Checking vite.config.js ==="
-cat vite.config.js
+
+# manifest.jsonを正しい場所にコピー（この部分を追加）
+echo "=== Moving manifest.json to correct location ==="
+cp public/build/.vite/manifest.json public/build/manifest.json
+ls -la public/build/
 
 # キャッシュをクリア
 php artisan config:clear
