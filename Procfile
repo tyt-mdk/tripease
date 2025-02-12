@@ -1,0 +1,1 @@
+web: php artisan migrate --force && php-fpm & nginx -g 'daemon off;'

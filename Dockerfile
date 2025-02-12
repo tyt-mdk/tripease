@@ -53,6 +53,3 @@ COPY docker/nginx.conf /etc/nginx/sites-available/default
 
 # ポート設定
 EXPOSE 80
-
-# 起動コマンドを設定（マイグレーションを含む）
-ENTRYPOINT ["sh", "-c", "php artisan migrate --force && php-fpm & nginx -g 'daemon off;'"]
