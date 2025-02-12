@@ -8,6 +8,12 @@ export APP_DEBUG=true
 chmod -R 775 /var/www/html/storage
 chmod -R 775 /var/www/html/bootstrap/cache
 
+# npmビルドを実行（この部分を追加）
+cd /var/www/html
+npm install --legacy-peer-deps
+npm run build
+ls -la public/build/  # デバッグ用
+
 # キャッシュをクリア
 php artisan config:clear
 php artisan cache:clear
