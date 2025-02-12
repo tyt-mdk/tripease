@@ -18,8 +18,6 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    nodejs \
-    npm \
     libpq-dev \
     postgresql \
     postgresql-contrib
