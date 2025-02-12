@@ -54,10 +54,20 @@ COPY docker/nginx.conf /etc/nginx/nginx.conf
 # PHP-FPMの設定
 RUN sed -i 's/listen = \/run\/php\/php8.1-fpm.sock/listen = 127.0.0.1:9000/g' /usr/local/etc/php-fpm.d/www.conf
 
-# ディレクトリとパーミッションの設定
-RUN mkdir -p /var/log/nginx /var/run/nginx /var/lib/nginx
-RUN chown -R www-data:www-data /var/www/html /var/log/nginx /var/run/nginx /var/lib/nginx
-RUN chmod -R 755 /var/www/html /var/log/nginx /var/run/nginx /var/lib/nginx
+# キャッシュをクリア
+RUN php artisan config:clear
+RUN php artisan cache:clear
+RUN php artisan view:clear
+RUN php artisan route:clear
+
+# ストレージディレクトリの準備
+RUN mkdir -p /var/www/html/storage/framework/{sessions,views,cache}
+RUN mkdir -p /var/www/html/storage/logs
+
+# パーミッションの設定
+RUN chown -R www-data:www-data /var/www/html
+RUN find /var/www/html/storage -type f -exec chmod 644 {} \;
+RUN find /var/www/html/storage -type d -exec chmod 755 {} \;
 
 # ポート設定
 EXPOSE 80
