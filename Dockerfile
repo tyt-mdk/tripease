@@ -47,26 +47,24 @@ RUN npm run build
 RUN cp .env.example .env
 RUN php artisan key:generate --force
 
-# パーミッションを設定
-RUN chown -R www-data:www-data /var/www/html
-RUN chmod -R 775 storage bootstrap/cache
-
 # Nginxをインストールして設定
 RUN apt-get install -y nginx
-COPY docker/nginx.conf /etc/nginx/sites-available/default
-RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
-RUN rm -f /etc/nginx/sites-enabled/default
+COPY docker/nginx.conf /etc/nginx/nginx.conf
 
 # PHP-FPMの設定
 RUN sed -i 's/listen = \/run\/php\/php8.1-fpm.sock/listen = 127.0.0.1:9000/g' /usr/local/etc/php-fpm.d/www.conf
 
-# ログディレクトリの作成とパーミッション設定
-RUN mkdir -p /var/log/nginx /var/run/nginx
-RUN chown -R www-data:www-data /var/log/nginx /var/run/nginx
-RUN chmod -R 755 /var/log/nginx /var/run/nginx
+# ディレクトリとパーミッションの設定
+RUN mkdir -p /var/log/nginx /var/run/nginx /var/lib/nginx
+RUN chown -R www-data:www-data /var/www/html /var/log/nginx /var/run/nginx /var/lib/nginx
+RUN chmod -R 755 /var/www/html /var/log/nginx /var/run/nginx /var/lib/nginx
 
 # ポート設定
 EXPOSE 80
 
-# 起動コマンドを設定
-CMD ["sh", "-c", "service nginx start && php-fpm"]
+# 起動スクリプトを作成
+RUN echo '#!/bin/sh\nnginx\nphp-fpm\n' > /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# 起動コマンド
+CMD ["/usr/local/bin/start.sh"]
