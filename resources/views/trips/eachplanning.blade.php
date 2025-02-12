@@ -92,7 +92,7 @@
     </style>
 
     <title>Tripease</title>
-    @vite('resources/css/app.css')
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body class="flex flex-col min-h-screen bg-slate-100 text-slate-800 font-notosans text-sm md:text-base">
     <!-- フラッシュメッセージ（固定位置） -->

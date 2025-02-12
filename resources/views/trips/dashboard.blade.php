@@ -9,7 +9,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script><!-- Alpine.js -->
     <title>TripEase</title>
 
-    @vite('resources/css/app.css')
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body class="flex flex-col min-h-screen bg-slate-100 text-slate-800 font-notosans">
     <header class="bg-white shadow-sm">

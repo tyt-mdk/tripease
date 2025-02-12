@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>新規アカウント作成 - TripEase</title>
-    @vite('resources/css/app.css')
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body class="flex flex-col min-h-screen bg-slate-100">
     <main class="flex-grow flex items-center justify-center">

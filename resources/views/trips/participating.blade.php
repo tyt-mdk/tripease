@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-slate-100">
     <div class="min-h-screen">
