@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
 
 // Fonts
 @import url('https://fonts.bunny.net/css?family=Nunito');
@@ -8,5 +7,7 @@
 // Variables
 @import 'variables';
 
-// Bootstrap
-@import 'bootstrap/scss/bootstrap';
+// Tailwind CSS（最後に読み込む）
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
