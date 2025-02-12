@@ -52,6 +52,8 @@ RUN npm -v
 RUN node -v
 
 # npmパッケージをインストール
+RUN npm cache clean --force
+RUN rm -rf node_modules package-lock.json
 RUN npm install --legacy-peer-deps
 RUN npm install -D vite@latest --legacy-peer-deps
 RUN npm install -D @vitejs/plugin-vue@latest --legacy-peer-deps
@@ -64,7 +66,7 @@ RUN npm list
 RUN npm list vite || true  # エラーを無視
 
 # ビルドを実行
-RUN NODE_ENV=production node_modules/.bin/vite build --config vite.config.js
+RUN npm run build
 
 
 # 環境設定
