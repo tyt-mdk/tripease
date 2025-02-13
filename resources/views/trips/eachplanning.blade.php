@@ -12,18 +12,25 @@
 
     <style>
         /* 最上位に配置（新規追加） */
-        main {
+            main {
             display: flex !important;
             flex-direction: column !important;
-            padding-bottom: 8rem !important;  /* pb-32相当 */
-            min-height: 0 !important; /* スクロールを可能にする */
-            flex: 1 1 auto !important; /* 高さを適切に確保 */
-            overflow-y: auto !important; /* スクロールを有効化 */
+            min-height: 0 !important;
+            flex: 1 1 auto !important;
+            overflow-y: auto !important;
         }
 
+        /* モバイル用のパディング */
+        @media (max-width: 767px) {
+            main {
+                padding-bottom: 12rem !important; /* フッターの高さ + 余裕分 */
+            }
+        }
+
+        /* デスクトップ用のパディング */
         @media (min-width: 768px) {
             main {
-                padding-bottom: 6rem !important;  /* md:pb-24相当 */
+                padding-bottom: 2rem !important; /* 通常のパディング */
             }
         }
 
@@ -129,6 +136,26 @@
             border-radius: 9999px;
             font-size: 0.875rem;
             transition: all 0.2s;
+        }
+
+        /* 小さな画面用の調整を追加 */
+        @media (max-width: 375px) {
+            /* タブナビゲーションの調整 */
+            .flex.space-x-8[aria-label="Tabs"] {
+                gap: 0.5rem !important; /* space-x-8の代わりに */
+                justify-content: flex-start !important;
+            }
+            
+            /* タブリンクのパディング調整 */
+            .tab-link {
+                padding: 0.5rem 0.25rem !important; /* px-3 py-2を調整 */
+                font-size: 0.75rem !important; /* さらに小さく */
+            }
+            
+            /* アイコンとテキストの間隔調整 */
+            .tab-link i {
+                margin-right: 0.25rem !important; /* mr-2を調整 */
+            }
         }
     </style>
 
