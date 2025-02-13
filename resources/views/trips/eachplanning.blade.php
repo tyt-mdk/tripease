@@ -11,19 +11,20 @@
     <script src="https://kit.fontawesome.com/ef96165231.js" crossorigin="anonymous"></script>
 
     <style>
-        /* 最上位に配置（新規追加） */
-            main {
+        /* mainタグのスタイル */
+        main {
             display: flex !important;
             flex-direction: column !important;
             min-height: 0 !important;
             flex: 1 1 auto !important;
             overflow-y: auto !important;
+            /* paddingではなく、margin-bottomを使用 */
+            margin-bottom: 12rem !important; /* モバイル用 */
         }
 
-        /* モバイル用のパディング */
-        @media (max-width: 767px) {
+        @media (min-width: 768px) {
             main {
-                padding-bottom: 12rem !important; /* フッターの高さ + 余裕分 */
+                margin-bottom: 2rem !important; /* デスクトップ用 */
             }
         }
 
@@ -138,6 +139,36 @@
             transition: all 0.2s;
         }
 
+        /* タブナビゲーションのスタイルを追加 */
+        .tab-nav {
+            display: flex;
+            flex-wrap: wrap !important;
+            gap: 0.5rem !important;
+            padding: 0.5rem !important;
+        }
+
+        /* タブアイテムのスタイルを調整 */
+        .tab-nav a {
+            font-size: 0.875rem !important;
+            padding: 0.5rem 0.75rem !important;
+            white-space: nowrap !important;
+            min-width: auto !important;
+        }
+
+        /* アイコンのサイズ調整 */
+        .tab-nav a i {
+            font-size: 0.875rem !important;
+        }
+
+        /* 共有ボタンの位置調整 */
+        .share-button {
+            position: relative !important;
+            top: auto !important;
+            right: auto !important;
+            margin-top: 0.5rem !important;
+            margin-left: auto !important;
+        }
+
         /* 小さな画面用の調整を追加 */
         @media (max-width: 375px) {
             /* タブナビゲーションの調整 */
@@ -186,7 +217,7 @@
     <!-- タブナビゲーション -->
     <div class="border-b border-slate-200 mb-6 mt-6">
         <nav class="max-w-4xl mx-auto px-4">
-            <div class="flex space-x-8" aria-label="Tabs">
+            <div class="tab-nav" aria-label="Tabs">
                 <!-- 概要タブ -->
                 <a href="#overview" 
                 onclick="switchTab('overview')"
@@ -207,9 +238,72 @@
                 class="touch-feedback tab-link px-3 py-2 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300">
                     <i class="fa-regular fa-note-sticky mr-2"></i>旅程ノート
                 </a>
+
+                <!-- 共有ボタン -->
+                <div class="share-button" x-data="{ 
+                    showShareLink: false, 
+                    shareUrl: '',
+                    generateShare() {
+                        fetch('{{ route('trips.generateShareLink', $trip) }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.shareUrl = data.share_url;
+                                this.showShareLink = true;
+                            } else {
+                                throw new Error(data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('共有リンクの生成に失敗しました');
+                        });
+                    }
+                }">
+                    <button @click="generateShare()"
+                            class="inline-flex items-center justify-center space-x-2 px-3 py-2 bg-white text-slate-600 text-sm font-medium rounded-full border border-slate-200 hover:bg-slate-50 transition-colors">
+                        <i class="fa-solid fa-share-nodes"></i>
+                        <span>共有</span>
+                    </button>
+                    <!-- 共有リンクのモーダル -->
+                    <template x-if="showShareLink">
+                        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                            @click.self="showShareLink = false">
+                            <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-lg font-medium text-slate-900">共有リンク</h3>
+                                    <button @click="showShareLink = false" class="text-slate-400 hover:text-slate-500">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="text" 
+                                            x-model="shareUrl" 
+                                            readonly 
+                                            class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-md text-slate-600 text-sm focus:outline-none">
+                                        <button @click="navigator.clipboard.writeText(shareUrl)"
+                                                class="inline-flex items-center justify-center px-3 py-2 bg-sky-500 text-white text-sm font-medium rounded-md hover:bg-sky-600 transition-colors">
+                                            <i class="fa-regular fa-copy mr-2"></i>
+                                            コピー
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
             </div>
         </nav>
     </div>
+
     <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-4 md:py-6 space-y-4 md:space-y-6 pb-32 md:pb-24" style="display: flex; flex-direction: column;">
         <!-- タブコンテンツ全体を囲む -->
         <div class="tab-content">
@@ -254,72 +348,6 @@
                         </div>
                     </form>
                 </section>
-
-                <!-- 共有リンク作成ボタン -->
-                <div x-data="{ 
-                    showShareLink: false, 
-                    shareUrl: '',
-                    generateShare() {
-                        fetch('{{ route('trips.generateShareLink', $trip) }}', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json'
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // share_urlを直接使用
-                                this.shareUrl = data.share_url;
-                                this.showShareLink = true;
-                            } else {
-                                throw new Error(data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('共有リンクの生成に失敗しました');
-                        });
-                    }
-                }" class="absolute top-4 right-4">
-                    <!-- 共有ボタン -->
-                    <button @click="generateShare()"
-                            class="inline-flex items-center justify-center space-x-2 px-3 py-2 bg-white text-slate-600 text-sm font-medium rounded-full border border-slate-200 hover:bg-slate-50 transition-colors">
-                        <i class="fa-solid fa-share-nodes"></i>
-                        <span>共有</span>
-                    </button>
-
-                    <!-- 共有リンクのモーダル -->
-                    <template x-if="showShareLink">
-                        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-                            @click.self="showShareLink = false">
-                            <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
-                                <div class="flex justify-between items-center mb-4">
-                                    <h3 class="text-lg font-medium text-slate-900">共有リンク</h3>
-                                    <button @click="showShareLink = false" class="text-slate-400 hover:text-slate-500">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-                                </div>
-                                <div class="space-y-4">
-                                    <div class="flex items-center space-x-2">
-                                        <input type="text" 
-                                            x-model="shareUrl" 
-                                            readonly 
-                                            class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-md text-slate-600 text-sm focus:outline-none">
-                                        <button @click="navigator.clipboard.writeText(shareUrl)"
-                                                class="inline-flex items-center justify-center px-3 py-2 bg-sky-500 text-white text-sm font-medium rounded-md hover:bg-sky-600 transition-colors">
-                                            <i class="fa-regular fa-copy mr-2"></i>
-                                            コピー
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-
                 <!-- 確定した日程の表示セクション -->
                 <section class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
                     <div class="p-4 bg-slate-50 border-b border-slate-200">
